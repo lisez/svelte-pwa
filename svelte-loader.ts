@@ -1,40 +1,55 @@
 import { plugin } from 'bun';
-import { compile, preprocess } from 'svelte/compiler';
+import { compile, compileModule, preprocess } from 'svelte/compiler';
 import { readFileSync } from 'fs';
-import sveltePreprocess from 'svelte-preprocess';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 // Create preprocessor once for reuse
-const preprocessor = sveltePreprocess();
+const preprocessor = vitePreprocess();
 
 plugin({
   name: 'svelte-loader',
   setup(build) {
-    build.onLoad({ filter: /\.svelte$/ }, async ({ path }) => {
+    build.onLoad({ filter: /\.svelte(\.[jt]s)?$/ }, async ({ path }) => {
       try {
         const source = readFileSync(path, 'utf-8');
+        const isSvelteFile = path.endsWith('.svelte');
         
-        // Preprocess TypeScript and other features
-        let preprocessed;
-        try {
-          preprocessed = await preprocess(source, preprocessor, {
-            filename: path,
-          });
-        } catch (error) {
-          throw new Error(`Failed to preprocess Svelte component at ${path}: ${error instanceof Error ? error.message : String(error)}`);
-        }
-        
-        // Compile the preprocessed code
         let js;
-        try {
-          const result = compile(preprocessed.code, {
-            filename: path,
-            generate: 'dom',
-            hydratable: false,
-            css: 'injected',
-          });
-          js = result.js;
-        } catch (error) {
-          throw new Error(`Failed to compile Svelte component at ${path}: ${error instanceof Error ? error.message : String(error)}`);
+
+        if (isSvelteFile) {
+          // Preprocess TypeScript and other features
+          let codeToCompile = source;
+          try {
+            const preprocessed = await preprocess(source, preprocessor, {
+              filename: path,
+            });
+            codeToCompile = preprocessed.code;
+          } catch (error) {
+            throw new Error(`Failed to preprocess Svelte component at ${path}: ${error instanceof Error ? error.message : String(error)}`);
+          }
+          
+          // Compile the preprocessed code
+          try {
+            const result = compile(codeToCompile, {
+              filename: path,
+              generate: 'client',
+              css: 'injected',
+            });
+            js = result.js;
+          } catch (error) {
+            throw new Error(`Failed to compile Svelte component at ${path}: ${error instanceof Error ? error.message : String(error)}`);
+          }
+        } else {
+          // Compile Svelte module (.svelte.js/.svelte.ts)
+          try {
+            const result = compileModule(source, {
+              filename: path,
+              generate: 'client',
+            });
+            js = result.js;
+          } catch (error) {
+             throw new Error(`Failed to compile Svelte module at ${path}: ${error instanceof Error ? error.message : String(error)}`);
+          }
         }
 
         return {

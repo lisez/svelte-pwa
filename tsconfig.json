@@ -16,7 +16,12 @@
     "composite": true,
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "svelte": ["node_modules/svelte/src/index-client.js"],
+      "svelte/*": ["node_modules/svelte/src/*"]
+    }
   },
   "exclude": ["node_modules", "dist", ".svelte-kit"]
 }
