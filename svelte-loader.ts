@@ -1,14 +1,21 @@
 import { plugin } from 'bun';
-import { compile } from 'svelte/compiler';
+import { compile, preprocess } from 'svelte/compiler';
 import { readFileSync } from 'fs';
+import sveltePreprocess from 'svelte-preprocess';
 
 plugin({
   name: 'svelte-loader',
   setup(build) {
-    build.onLoad({ filter: /\.svelte$/ }, ({ path }) => {
+    build.onLoad({ filter: /\.svelte$/ }, async ({ path }) => {
       try {
         const source = readFileSync(path, 'utf-8');
-        const { js } = compile(source, {
+        
+        // Preprocess TypeScript and other features
+        const preprocessed = await preprocess(source, sveltePreprocess(), {
+          filename: path,
+        });
+        
+        const { js } = compile(preprocessed.code, {
           filename: path,
           generate: 'dom',
           hydratable: false,
