@@ -11,6 +11,7 @@
     "clean": "rm -rf dist .svelte-kit node_modules/.vite"
   },
   "dependencies": {
+    "@bun-svelte-pwa/shared": "file:../shared",
     "svelte": "^4.2.8"
   },
   "devDependencies": {

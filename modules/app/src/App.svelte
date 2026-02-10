@@ -2,9 +2,13 @@
   import svelteLogo from './assets/svelte.svg'
   import bunLogo from './assets/bun.svg'
   import Counter from './lib/Counter.svelte'
+  import { formatDate, getEnvironment } from '@bun-svelte-pwa/shared'
 
   let isPWAInstallable = false
   let deferredPrompt: any
+  
+  const currentDate = formatDate(new Date())
+  const environment = getEnvironment()
 
   if ('serviceWorker' in navigator) {
     import('workbox-window').then(({ Workbox }) => {
@@ -40,6 +44,7 @@
   </div>
   <h1>Bun + Svelte PWA</h1>
   <p class="subtitle">TypeScript Monorepo Template</p>
+  <p class="info">Environment: {environment} | {currentDate}</p>
 
   <div class="card">
     <Counter />
@@ -80,7 +85,12 @@
   .subtitle {
     font-size: 1.2em;
     color: #888;
-    margin: -1em 0 2em 0;
+    margin: -1em 0 0.5em 0;
+  }
+  .info {
+    font-size: 0.9em;
+    color: #666;
+    margin: 0 0 2em 0;
   }
   .install-pwa {
     margin: 2em 0;
