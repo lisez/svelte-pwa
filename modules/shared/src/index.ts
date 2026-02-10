@@ -38,18 +38,19 @@ export function isBrowser(): boolean {
  * Get environment name
  */
 export function getEnvironment(): 'development' | 'production' | 'test' {
-  // Check if running in Node.js environment
-  const hasProcess = typeof globalThis !== 'undefined' && 
-                     'process' in globalThis && 
-                     globalThis.process !== null &&
-                     typeof globalThis.process === 'object' &&
-                     'env' in globalThis.process;
-  
-  if (hasProcess) {
-    const env = (globalThis.process as { env?: { NODE_ENV?: string } }).env?.NODE_ENV;
-    if (env === 'development' || env === 'production' || env === 'test') {
-      return env;
+  // Check if running in Node.js environment using a type-safe approach
+  try {
+    // Use dynamic property access to avoid TypeScript errors
+    const g = globalThis as Record<string, unknown>;
+    if ('process' in g && g.process !== null && typeof g.process === 'object') {
+      const proc = g.process as { env?: Record<string, string> };
+      const env = proc.env?.NODE_ENV;
+      if (env === 'development' || env === 'production' || env === 'test') {
+        return env;
+      }
     }
+  } catch {
+    // If any error occurs, fall through to default
   }
   return 'development'
 }
