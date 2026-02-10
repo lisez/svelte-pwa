@@ -31,4 +31,4 @@ jobs:
       run: bun run type-check
       
     - name: Run unit tests
-      run: bun test
+      run: bun test modules/*/src/**/*.test.ts
