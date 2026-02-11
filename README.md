@@ -1,16 +1,18 @@
 # Bun Svelte PWA
 
-A TypeScript monorepo template for building Progressive Web Apps (PWA) with Svelte. Compatible with both Bun and npm package managers.
+A TypeScript monorepo template for building Progressive Web Apps (PWA) with SvelteKit. Compatible with both Bun and npm package managers.
 
 ## Features
 
 - 🚀 **Bun & npm Compatible** - Works with both Bun and npm package managers
 - 📦 **Monorepo Structure** - Organized with Nx monorepo tool and workspaces pattern
 - 🎯 **TypeScript** - Full TypeScript support across all modules
-- ⚡ **Svelte** - Reactive and efficient UI framework
+- ⚡ **SvelteKit** - Full-stack framework with file-based routing
+- 🎨 **Svelte 5** - Latest Svelte with modern runes and snippets
 - 📱 **PWA Support** - Offline-first with service workers and manifest
 - 🔧 **Vite** - Lightning-fast build tool and dev server
 - 🎨 **Tailwind CSS** - Utility-first CSS framework for styling
+- 🧪 **Vitest** - Unit testing framework
 - 🧪 **Playwright** - End-to-end testing for web apps
 - 🎨 **Modern Stack** - Latest versions of all dependencies
 
@@ -19,17 +21,20 @@ A TypeScript monorepo template for building Progressive Web Apps (PWA) with Svel
 ```
 bun-svelte-pwa/
 ├── modules/              # Workspace modules
-│   ├── app/             # Main Svelte PWA application
+│   ├── app/             # Main SvelteKit PWA application
 │   │   ├── public/      # Static assets
 │   │   ├── src/         # Source code
-│   │   │   ├── assets/  # Images, icons, etc.
-│   │   │   ├── lib/     # Reusable components
-│   │   │   ├── App.svelte
-│   │   │   └── main.ts
-│   │   ├── tests/       # Playwright tests
+│   │   │   ├── lib/     # Reusable components and assets
+│   │   │   ├── routes/  # SvelteKit routes
+│   │   │   │   ├── +layout.svelte
+│   │   │   │   └── +page.svelte
+│   │   │   ├── app.css  # Global styles
+│   │   │   └── app.html # HTML template
+│   │   ├── tests/       # Playwright E2E tests
 │   │   ├── package.json
 │   │   ├── project.json # Nx project configuration
 │   │   ├── tsconfig.json
+│   │   ├── svelte.config.js
 │   │   ├── vite.config.ts
 │   │   ├── tailwind.config.js
 │   │   └── playwright.config.ts
